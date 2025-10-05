@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>wot?</title>
+  <style>
+    :root {
+      --bg-color: #F8F0FD;
+      --card-bg: #ffffff;
+      --text: #1c1c1c;
+      --button-bg: #e8e5ff;
+      --button-hover: #d8d4ff;
+      --border: #d3cef7;
+    }
+
+    body {
+      background-color: var(--bg-color);
+      font-family: monospace;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      margin: 0;
+      color: var(--text);
+    }
+
+    .container {
+      background-color: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+      padding: 40px 30px;
+      width: 90%;
+      max-width: 380px;
+      text-align: center;
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    .imageview img {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100vh; /* takes full screen height */
+  overflow: hidden;
+}
+
+.imageview img {
+  max-width: 90vmin; /* scales based on viewport size */
+  max-height: 90vmin;
+  height: auto;
+  width: auto;
+  object-fit: contain;
+  cursor: pointer;
+  transition: transform 0.25s ease;
+}
+
+.imageview img:hover {
+  transform: scale(1.05);
+}
+
+    input {
+      font-family: monospace;
+      font-size: 15px;
+      padding: 10px 14px;
+      margin: 10px 0 16px 0;
+      border-radius: 6px;
+      border: 1px solid #aaa;
+      width: 100%;
+      text-align: center;
+      outline: none;
+      background-color: #fff;
+    }
+
+    input:focus {
+      border-color: var(--button-hover);
+    }
+
+    button {
+      font-family: monospace;
+      font-size: 15px;
+      padding: 10px 20px;
+      margin-top: 10px;
+      border-radius: 8px;
+      border: none;
+      background-color: var(--button-bg);
+      cursor: pointer;
+      transition: background 0.25s ease, transform 0.2s ease;
+    }
+
+    button:hover {
+      background-color: var(--button-hover);
+      transform: translateY(-1px);
+    }
+
+    .tasks {
+      text-align: left;
+    }
+
+    .tasks p {
+      margin: 16px 0 6px 0;
+      line-height: 1.5;
+    }
+
+    .tasks input {
+      margin-bottom: 20px;
+    }
+
+    a button {
+      margin-left: 8px;
+    }
+
+    .final {
+      text-align: center;
+      padding: 30px;
+      border-radius: 10px;
+      background: #fff;
+      box-shadow: 0 3px 8px rgba(0, 0, 0, 0.05);
+    }
+
+    .fade {
+      animation: fadeIn 0.5s ease forwards;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(8px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    h3 {
+      margin-top: 0;
+      margin-bottom: 12px;
+    }
+
+    p {
+      font-size: 14px;
+      color: #333;
+    }
+    .nav {
+      float: right;
+    }
+  </style>
+</head>
+
+<body>
+  <div>
+    <!-- Step 1: Image View -->
+    <div class="imageview">
+      <img src="Wot2.jpg" alt="click here to continue">
+    </div>
+
+    <!-- Step 2: Username -->
+    <div class="username hidden fade">
+      <h3>enter your X username</h3>
+      <input type="text" id="x_username" placeholder="@username">
+      <button id="save_username">next</button>
+    </div>
+
+    <!-- Step 3: Tasks -->
+    <div class="tasks hidden fade">
+      <h3>complete these tasks </h3>
+
+      <p>1️⃣ follow
+        <a href="https://x.com/" target="_blank" rel="noopener noreferrer">
+          <button>go</button>
+        </a>
+      </p>
+
+      <p>2️⃣ like & quote pinned post with bullish caption
+        <a href="https://x.com/" target="_blank" rel="noopener noreferrer">
+          <button>go</button>
+        </a>
+      </p>
+      <input type="url" id="repost_link" placeholder="quote link">
+
+      <p>3️⃣ tag 2 frens
+        <a href="https://x.com/" target="_blank" rel="noopener noreferrer">
+          <button>go</button>
+        </a>
+      </p>
+
+      <input type="url" id="comment_link" placeholder="comment link">
+
+      <button id="done_tasks">next</button>
+    </div>
+
+    <!-- Step 4: Address -->
+    <div class="address hidden fade">
+      <h3>enter your wallet</h3>
+      <input type="text" id="address" placeholder="0x...">
+      <button id="save_address">submit</button>
+    </div>
+
+    <!-- Step 5: Final -->
+    <div class="final hidden fade">
+      <h3>✅ entry recorded</h3>
+      <p>leaderboard coming soon</p>
+    </div>
+
+  </div>
+
+  <!-- Firebase + Realtime Database -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.3.0/firebase-app.js";
+    import { getDatabase, ref, push, set } from "https://www.gstatic.com/firebasejs/12.3.0/firebase-database.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyAKaGIWukjiDtcs87YOYVXJqFj_qAvch94",
+      authDomain: "wot-9d265.firebaseapp.com",
+      databaseURL: "https://wot-9d265-default-rtdb.firebaseio.com/",
+      projectId: "wot-9d265",
+      storageBucket: "wot-9d265.appspot.com",
+      messagingSenderId: "77886767479",
+      appId: "1:77886767479:web:dba9f840c01d2f50c36172"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app);
+
+    const imageView = document.querySelector('.imageview');
+    const usernameDiv = document.querySelector('.username');
+    const tasksDiv = document.querySelector('.tasks');
+    const addressDiv = document.querySelector('.address');
+    const finalDiv = document.querySelector('.final');
+
+    let username = "";
+    let repostLink = "";
+    let commentLink = "";
+
+    // Step 1 → Step 2
+    imageView.addEventListener('click', () => {
+      imageView.classList.add('hidden');
+      usernameDiv.classList.remove('hidden');
+    });
+
+    // Step 2 → Step 3
+    document.getElementById('save_username').addEventListener('click', () => {
+      username = document.getElementById('x_username').value.trim();
+      if (username) {
+        usernameDiv.classList.add('hidden');
+        tasksDiv.classList.remove('hidden');
+      }
+    });
+
+    // Step 3 → Step 4
+    document.getElementById('done_tasks').addEventListener('click', () => {
+      repostLink = document.getElementById('repost_link').value.trim();
+      commentLink = document.getElementById('comment_link').value.trim();
+      if (!repostLink || !commentLink) {
+        alert("Please paste both your repost and comment links before continuing.");
+        return;
+      }
+      tasksDiv.classList.add('hidden');
+      addressDiv.classList.remove('hidden');
+    });
+
+    // Step 4 → Step 5
+    document.getElementById('save_address').addEventListener('click', async () => {
+      const address = document.getElementById('address').value.trim();
+      const evmRegex = /^0x[a-fA-F0-9]{40}$/;
+
+      if (!evmRegex.test(address)) {
+        alert("Please enter a valid EVM address (starts with 0x + 40 hex characters).");
+        return;
+      }
+
+      if (address && username && repostLink && commentLink) {
+        try {
+          const entryRef = push(ref(db, "entries"));
+          await set(entryRef, { username, repostLink, commentLink, address });
+          addressDiv.classList.add('hidden');
+          finalDiv.classList.remove('hidden');
+        } catch (e) {
+          alert("Error saving: " + e);
+        }
+      }
+    });
+  </script>
+</body>
+</html>
