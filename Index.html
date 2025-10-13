@@ -223,7 +223,7 @@
     <!-- wotboard checker-->
      <div class="wotchecker hidden">
      <input type="text" id="check_username" placeholder="@username" />
-      <button id="check_btn">CHECK STATUS</button>
+      <button id="check_btn">CHECK board</button>
       <button id="back_wotboard">BACK</button>
       <div class="status neutral" id="check_status"></div>
       </div>
@@ -445,7 +445,7 @@ document.getElementById("back_home_from_username").addEventListener("click", () 
         checkStatus.textContent = "Congratulations!! You made it to the wotboard✅️";
         checkStatus.className = "status ok";
       } else {
-        checkStatus.textContent = "❌ You are not on the Wotboard Don't fret you are close!";
+        checkStatus.textContent = "❌ You haven't made it to the Wotboard. Keep making content Don't fret you are close!";
         checkStatus.className = "status error";
       }
     });
