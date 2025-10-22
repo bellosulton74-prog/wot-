@@ -208,16 +208,16 @@
     </div>
 
     <!-- Step Wotboard -->
-    <div class="wotboard hidden">
+   <div class="wotboard hidden">
       <h1 class="live-pulse">🏆 WOTBOARD HAS ENDED!!</h1>
       <button id="about_wotboard_btn">CAMPAIGN INFO</button>
-      <button id="checker">CHECK BOARD </button>
+      <button id="checker">CHECK STATUS </button>
       <button id="back_home">BACK</button>
     </div>
     <!-- wotboard checker-->
      <div class="wotchecker hidden">
      <input type="text" id="check_username" placeholder="@username" />
-      <button id="check_btn">CHECK BOARD</button>
+      <button id="check_btn">CHECK STATUS</button>
       <button id="back_wotboard">BACK</button>
       <div class="status neutral" id="check_status"></div>
       </div>
@@ -279,6 +279,7 @@
 </div>
   </div>
 </body>
+
 
   <script type="module">
     import {
@@ -470,7 +471,6 @@ closechecker.addEventListener("click", () => {
   checkerdiv.classList.add("hidden");
   wotboardDiv.classList.remove("hidden");
 });
-
   </script>
 </body>
 </html>
