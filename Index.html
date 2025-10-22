@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>wot?</title>
+   <!-- Font Awesome CDN for Discord Icon -->
+  <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+  />
+  <style>
+    :root {
+      --bg-color: #f5f3ff;
+      --card-bg: #ffffff;
+      --text: #1c1c1c;
+      --button-bg: #e8e5ff;
+      --button-hover: #d8d4ff;
+      --border: #d3cef7;
+    }
+
+    body {
+      background-color: var(--bg-color);
+      font-family: monospace;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      margin: 0;
+      color: var(--text);
+    }
+
+    .container {
+      background-color: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+      padding: 40px 30px;
+      width: 90%;
+      max-width: 380px;
+      text-align: center;
+     
+    }
+
+    .hidden { display: none !important; }
+
+    button {
+      font-family: monospace;
+      font-size: 15px;
+      padding: 10px 20px;
+      margin: 8px;
+      border-radius: 8px;
+      border: none;
+      background-color: var(--button-bg);
+      cursor: pointer;
+      transition: background 0.25s ease, transform 0.2s ease;
+    }
+
+    button:hover {
+      background-color: var(--button-hover);
+      transform: translateY(-1px);
+    }
+
+    input {
+  font-family: monospace;
+  font-size: 15px;
+  padding: 10px 14px;
+  margin: 10px auto 16px auto; /* Changed to auto for horizontal centering */
+  border-radius: 6px;
+  border: 1px solid #aaa;
+  width: 90%; /* Reduced from 100% to allow centering */
+  max-width: 300px; /* Optional: prevents them from getting too wide */
+  text-align: center;
+  outline: none;
+  display: block; /* Ensures margin: auto works properly */
+}
+    }
+
+    .status {
+      font-size: 13px;
+      margin-top: 6px;
+      min-height: 18px;
+    }
+
+    .status.ok { color: green; }
+    .status.error { color: red; }
+    .status.neutral { color: #444; }
+    
+    .discord-btn {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-size: 26px;
+      color: #5865f2;
+      transition: transform 0.25s ease, color 0.25s ease;
+    }
+
+    .discord-btn:hover {
+      transform: scale(1.1);
+      color: #4752c4;
+    }
+/* WOTBOARD IS LIVE animation - pulsating effect */
+@keyframes pulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+  100% { transform: scale(1); }
+}
+
+.live-pulse {
+  animation: pulse 2s ease-in-out infinite;
+}
+
+/* 7 days left loading dots animation */
+@keyframes loadingDots {
+  0%, 20% { content: "."; }
+  40% { content: ".."; }
+  60%, 100% { content: "..."; }
+}
+
+.days-loading {
+  position: relative;
+  display: inline-block;
+}
+
+.days-loading::after {
+  content: "...";
+  animation: loadingDots 1.5s infinite;
+}
+/* About Popup justified text */
+.leaderboard-popup .leaderboard-content {
+  text-align: left;
+}
+
+.leaderboard-popup .leaderboard-content p,
+.leaderboard-popup .leaderboard-content li {
+  text-align: justify;
+  text-justify: inter-word;
+  line-height: 1.5;
+  margin-bottom: 12px;
+}
+
+.leaderboard-popup .leaderboard-content ul {
+  padding-left: 20px;
+}
+
+.leaderboard-popup .leaderboard-content li {
+  margin-bottom: 10px;
+}
+  </style>
+</head>
+<body>
+    <!-- 🟣 Discord Icon -->
+  <button
+    class="discord-btn"
+    onclick="window.open('https://discord.gg/2TnHyUcY', '_blank')"
+    title="Join our Discord"
+  >
+    <i class="fa-brands fa-discord"></i>
+  </button>
+  
+  <div class="container">
+
+    <!-- Step 0: Entry choice -->
+    <div class="start">
+      <h3>WOT CABAL</h3>
+      <button id="apply_btn">APPLY</button>
+      <button id="wotboard_btn">WOTBOARD</button>
+    </div>
+
+<!-- Step 1: Username -->
+<div class="username hidden">
+  <h3>MORE INFO ON DISCORD </h3>
+ 
+  <button id="back_home_from_username">BACK</button>
+</div>
+
+    <!-- Step 2: Tasks -->
+    
+
+    <!-- Step Wotboard -->
+    <div class="wotboard hidden">
+      <h1 class="live-pulse">🏆 WOTBOARD HAS ENDED!</h1>
+      <h3 class="days-loading"></h3></br>
+      <button id="about_wotboard_btn">CAMPAIGN INFO</button>
+      <button id="checker">CHECK STATUS </button>
+      <button id="back_home">BACK</button>
+    </div>
+    <!-- wotboard checker-->
+     <div class="wotchecker hidden">
+     <input type="text" id="check_username" placeholder="@username" />
+      <button id="check_btn">CHECK STATUS</button>
+      <button id="back_wotboard">BACK</button>
+      <div class="status neutral" id="check_status"></div>
+      </div>
+    
+<!-- About Popup -->
+<div class="leaderboard-popup hidden" id="about_popup">
+  <div class="leaderboard-content">
+    <h2>About Wotboard</h2>
+    <p id="about_text">
+
+  <p>📅 The Wotboard Campaign will be live for 7 days.</p>
+
+  <p><b>🎯 What is the wotboard?</b></br>
+  Wotboard isn't a leaderboard or a ranking system like these Yapping Campaigns.
+
+  The campaign favors everyone as engagements is less than 1% of the requirements to get you on it.</p>
+
+  <p>If you create something meaningful, you’ll find yourself on the Wotboard.
+    See it as a board of recognition </p>
+    <ul>
+  <li><b>⚖️ Fairness First</b></br>
+  This campaign is designed to favor everyone equally:
+</br>
+  - Big Accounts don’t have an upper hand.</br>
+  - AI-generated threads won’t sneak in.</br>
+  - Everyone starts on the same footing.
+  </li>
+  
+<li> <b>🧠 What Gets You On the Wotboard?</b></br>
+  To make it to the Wotboard, your content about wotcabal must reflect any of the following you resonate with:</br>
+  - Creativity</br>
+  - Thoughtfulness</br>
+  - Sarcasm</br>
+  - Informative</br>
+  - Genuine</br> </li>
+ 
+
+  <p>⚠️ Engagement is not a perk, but it surely increases the chance of your post being seen by our interns.</p>
+
+<li>  <p><b>🎨 What Can You Post?</b></br>
+  Anything that feels real and natural about wotcabal.</br>
+  More posts about what Wotcabal is will be made to inspire your ideas.
+
+  Your contents can be:</br>
+  - Videos</br>
+  - Memes</br>
+  - Threads</br>
+  - Artworks</br>  
+  Let your imagination run wild</li></p>
+
+  <li><b> 🔢 Limited Spots</b>
+  For now, only 1,000 people will make it to the Wotboard throughout the campaign. changes may be made as time goes on, but that’s the current cap.
+
+  We’ll be watching.</li>
+    </ul>  
+
+    <button class="close-btn" id="close_about">close</button>
+  </div>
+</div>
+  </div>
+</body>
+
+  <script type="module">
+    import {
+      initializeApp
+    } from "https://www.gstatic.com/firebasejs/12.3.0/firebase-app.js";
+    import {
+      getDatabase, ref, push, set, get, query, orderByChild, equalTo
+    } from "https://www.gstatic.com/firebasejs/12.3.0/firebase-database.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyAKaGIWukjiDtcs87YOYVXJqFj_qAvch94",
+      authDomain: "wot-9d265.firebaseapp.com",
+      databaseURL: "https://wot-9d265-default-rtdb.firebaseio.com/",
+      projectId: "wot-9d265",
+      storageBucket: "wot-9d265.appspot.com",
+      messagingSenderId: "77886767479",
+      appId: "1:77886767479:web:dba9f840c01d2f50c36172"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app);
+
+    // DOM references
+    const startDiv = document.querySelector(".start");
+    const usernameDiv = document.querySelector(".username");
+    const tasksDiv = document.querySelector(".tasks");
+    const addressDiv = document.querySelector(".address");
+    const finalDiv = document.querySelector(".final");
+    const wotboardDiv = document.querySelector(".wotboard");
+
+    const usernameInput = document.getElementById("x_username");
+    const usernameStatus = document.getElementById("username_status");
+    const saveUsernameBtn = document.getElementById("save_username");
+
+    const checkInput = document.getElementById("check_username");
+    const checkBtn = document.getElementById("check_btn");
+    const checkStatus = document.getElementById("check_status");
+    const checkerdiv = document.querySelector(".wotchecker");
+    const openchecker = document.getElementById("checker");
+    const closechecker = document.getElementById("back_wotboard")
+    
+    let username = "", repostLink = "", commentLink = "";
+
+    // Step 0 → Apply
+    document.getElementById("apply_btn").addEventListener("click", () => {
+      startDiv.classList.add("hidden");
+      usernameDiv.classList.remove("hidden");
+    });
+
+    // Step 0 → Wotboard
+    document.getElementById("wotboard_btn").addEventListener("click", () => {
+      startDiv.classList.add("hidden");
+      wotboardDiv.classList.remove("hidden");
+    });
+
+    // Back to home
+    document.getElementById("back_home").addEventListener("click", () => {
+      wotboardDiv.classList.add("hidden");
+      startDiv.classList.remove("hidden");
+    });
+     // Back to home from username step
+document.getElementById("back_home_from_username").addEventListener("click", () => {
+  usernameDiv.classList.add("hidden");
+  startDiv.classList.remove("hidden");
+  usernameInput.value = "";
+  usernameStatus.textContent = "";
+  saveUsernameBtn.disabled = true;
+});
+   
+
+    // 🏆 Wotboard username check
+    checkBtn.addEventListener("click", async () => {
+      const user = checkInput.value.trim();
+      if (!user) {
+        checkStatus.textContent = "enter a username first.";
+        checkStatus.className = "status error";
+        return;
+      }
+
+      checkStatus.textContent = "checking...";
+      checkStatus.className = "status neutral";
+
+      const q = query(ref(db, "leaderboard"), orderByChild("username"), equalTo(user));
+      const snap = await get(q);
+
+      if (snap.exists()) {
+        checkStatus.textContent = "Congratulations!! You made it to the wotboard✅️";
+        checkStatus.className = "status ok";
+      } else {
+        checkStatus.textContent = "❌ You are not on the Wotboard Don't fret you are close!";
+        checkStatus.className = "status error";
+      }
+    });
+    
+    // Wotboard popup buttons
+const aboutPopup = document.getElementById("about_popup");
+const aboutBtn = document.getElementById("about_wotboard_btn");
+const closeAboutBtn = document.getElementById("close_about");
+
+// Open “About Wotboard” popup
+aboutBtn.addEventListener("click", () => {
+  aboutPopup.classList.remove("hidden");
+  wotboardDiv.classList.add("hidden");
+});
+
+// Close “About Wotboard” popup
+closeAboutBtn.addEventListener("click", () => {
+  aboutPopup.classList.add("hidden");
+  wotboardDiv.classList.remove("hidden");
+});
+// open checker
+openchecker.addEventListener("click", () => {
+  checkerdiv.classList.remove("hidden");
+  wotboardDiv.classList.add("hidden");
+});
+
+// Close checker
+closechecker.addEventListener("click", () => {
+  checkerdiv.classList.add("hidden");
+  wotboardDiv.classList.remove("hidden");
+});
+
+  </script>
+</body>
+</html>
